@@ -8,7 +8,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
@@ -16,6 +15,7 @@ import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -45,27 +45,24 @@ public class GmailApiService {
     @Value("${gmail.account.username}")
     private String gmailUsername;
 
-    @Value("${gmail.credential}")
-    private String credentialFile;
-
     @Value("${gmail.folder}")
     private String dataStoreFolder;
+
+    @Autowired private GoogleClientSecrets clientSecrets;
+
+    @Autowired private JsonFactory jsonFactory;
 
     private Gmail gmail;
 
     @PostConstruct
     public void inisialisasiOauth() throws Exception {
-        JsonFactory jsonFactory =
-                JacksonFactory.getDefaultInstance();
+
+        Files.createDirectories(Paths.get(dataStoreFolder));
 
         FileDataStoreFactory fileDataStoreFactory =
                 new FileDataStoreFactory(new File(dataStoreFolder));
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
-        GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(jsonFactory,
-                        new InputStreamReader(new FileInputStream(credentialFile)));
 
         GoogleAuthorizationCodeFlow flow =
                 new GoogleAuthorizationCodeFlow.Builder(
