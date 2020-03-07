@@ -3,18 +3,21 @@ package com.muhardin.endy.belajar.belajargmailapi;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.muhardin.endy.belajar.belajargmailapi.service.GmailApiService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class BelajarGmailApiApplicationTests {
 
@@ -46,6 +49,33 @@ public class BelajarGmailApiApplicationTests {
 				"endy.muhardin@gmail.com",
 				"Percobaan Mustache Template",
 				output.toString());
+	}
+
+	@Value("${gmail.folder}")
+	private String dataStoreFolder;
+
+	@Test
+	public void testConvertStoredCredential() throws IOException {
+		byte[] credentialFile = Files.readAllBytes(
+				Paths.get(dataStoreFolder + File.separator +
+						BelajarGmailApiApplication.STORED_CREDENTIAL_FILE));
+		String base64Encoded
+				= Base64.getEncoder()
+				.encodeToString(credentialFile);
+
+		System.out.println(base64Encoded);
+	}
+
+	@Test
+	public void testConvertClientSecret() throws IOException {
+		byte[] clientSecretJson = Files.readAllBytes(
+				Paths.get(dataStoreFolder + File.separator +
+						BelajarGmailApiApplication.CLIENT_SECRET_JSON_FILE));
+		String base64Encoded
+				= Base64.getEncoder()
+				.encodeToString(clientSecretJson);
+
+		System.out.println(base64Encoded);
 	}
 
 }
