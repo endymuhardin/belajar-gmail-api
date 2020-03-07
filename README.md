@@ -10,7 +10,7 @@ Cara menjalankan:
 
 2. Perhatikan console log, nanti ada perintah untuk copas url ke browser seperti ini
 
-    [![Copas URL Google Auth]]
+    [![Copas URL Google Auth](docs/setup-gmail-api.png)](docs/setup-gmail-api.png)
 
 3. Buka di browser, berikan otorisasi untuk aplikasi
 
