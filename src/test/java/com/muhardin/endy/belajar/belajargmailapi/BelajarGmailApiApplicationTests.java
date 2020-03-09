@@ -2,7 +2,8 @@ package com.muhardin.endy.belajar.belajargmailapi;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.muhardin.endy.belajar.belajargmailapi.service.GmailApiService;
+import com.muhardin.endy.belajar.belajargmailapi.config.GmailApiConfiguration;
+import com.muhardin.endy.belajar.belajargmailapi.service.EmailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +22,15 @@ import java.util.Map;
 @SpringBootTest
 public class BelajarGmailApiApplicationTests {
 
-	@Autowired private GmailApiService gmailApiService;
+	@Value("${gmail.folder}")
+	private String dataStoreFolder;
+
+	@Autowired private EmailService emailService;
 	@Autowired private MustacheFactory mustacheFactory;
 
 	@Test
 	public void testKirimEmail() {
-		gmailApiService.kirimEmail(
+		emailService.kirimEmail(
 				"Belajar GMail API",
 				"endy.muhardin@gmail.com",
 				"Email Percobaan" + LocalDateTime.now(),
@@ -44,21 +48,19 @@ public class BelajarGmailApiApplicationTests {
 		StringWriter output = new StringWriter();
 		templateEmail.execute(output, data);
 
-		gmailApiService.kirimEmail(
+		emailService.kirimEmail(
 				"Belajar GMail API",
 				"endy.muhardin@gmail.com",
 				"Percobaan Mustache Template",
 				output.toString());
 	}
 
-	@Value("${gmail.folder}")
-	private String dataStoreFolder;
 
 	@Test
 	public void testConvertStoredCredential() throws IOException {
 		byte[] credentialFile = Files.readAllBytes(
 				Paths.get(dataStoreFolder + File.separator +
-						BelajarGmailApiApplication.STORED_CREDENTIAL_FILE));
+						GmailApiConfiguration.STORED_CREDENTIAL_FILE));
 		String base64Encoded
 				= Base64.getEncoder()
 				.encodeToString(credentialFile);
@@ -70,7 +72,7 @@ public class BelajarGmailApiApplicationTests {
 	public void testConvertClientSecret() throws IOException {
 		byte[] clientSecretJson = Files.readAllBytes(
 				Paths.get(dataStoreFolder + File.separator +
-						BelajarGmailApiApplication.CLIENT_SECRET_JSON_FILE));
+						GmailApiConfiguration.CLIENT_SECRET_JSON_FILE));
 		String base64Encoded
 				= Base64.getEncoder()
 				.encodeToString(clientSecretJson);

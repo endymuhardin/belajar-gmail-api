@@ -3,7 +3,7 @@ package com.muhardin.endy.belajar.belajargmailapi.controller;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.muhardin.endy.belajar.belajargmailapi.dto.KirimEmailRequest;
-import com.muhardin.endy.belajar.belajargmailapi.service.GmailApiService;
+import com.muhardin.endy.belajar.belajargmailapi.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 public class KirimEmailController {
 
-    @Autowired private GmailApiService gmailApiService;
+    @Autowired private EmailService emailService;
     @Autowired private MustacheFactory mustacheFactory;
 
     @PostMapping("/kirim")
@@ -33,7 +33,7 @@ public class KirimEmailController {
         StringWriter output = new StringWriter();
         templateEmail.execute(output, data);
 
-        gmailApiService.kirimEmail(
+        emailService.kirimEmail(
                 kirimEmailRequest.getDari(),
                 kirimEmailRequest.getUntuk(),
                 kirimEmailRequest.getSubjek(),
