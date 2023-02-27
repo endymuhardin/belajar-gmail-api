@@ -5,7 +5,7 @@ Cara menjalankan:
 1. Jalankan aplikasinya
 
     ```
-    mvn clean spring-boot:run  
+    SPRING_PROFILES_ACTIVE=local mvn clean spring-boot:run  
     ```
 
 2. Perhatikan console log, nanti ada perintah untuk copas url ke browser seperti ini
