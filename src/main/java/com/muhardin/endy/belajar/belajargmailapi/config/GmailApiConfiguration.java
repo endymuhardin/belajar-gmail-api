@@ -2,7 +2,8 @@ package com.muhardin.endy.belajar.belajargmailapi.config;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,7 @@ public class GmailApiConfiguration {
 
     @Bean
     public JsonFactory jsonFactory(){
-        return JacksonFactory.getDefaultInstance();
+        return GsonFactory.getDefaultInstance();
     }
 
     @Bean @Profile("local")

@@ -1,9 +1,8 @@
 package com.muhardin.endy.belajar.belajargmailapi.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class KirimEmailRequest {

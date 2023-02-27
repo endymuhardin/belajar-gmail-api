@@ -8,11 +8,17 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.util.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.mail.Session;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +26,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
@@ -89,14 +92,14 @@ public class GmailApiService implements EmailService {
             InternetAddress destination = new InternetAddress(to);
             MimeMessage email = new MimeMessage(session);
             email.setFrom(new InternetAddress(gmailUsername, from));
-            email.addRecipient(javax.mail.Message.RecipientType.TO, destination);
+            email.addRecipient(RecipientType.TO, destination);
             email.setSubject(subject);
             email.setContent(content, "text/html; charset=utf-8");
 
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             email.writeTo(buffer);
             byte[] bytes = buffer.toByteArray();
-            String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
+            String encodedEmail = Base64.getEncoder().encodeToString(bytes);
             Message message = new Message();
             message.setRaw(encodedEmail);
 
